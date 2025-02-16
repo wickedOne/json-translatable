@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <table>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>name</th>
+            <th>description</th>
+        </tr>
+        {%  for entity in entities %}
+            <tr>
+                <td>{{ entity.id }}</td>
+                <td>{{ entity.title }}</td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

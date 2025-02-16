@@ -1,0 +1,17 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    level: 9
+    paths:
+        - src/
+        - tests/
+    ignoreErrors:
+        -
+            message: '#Method [a-zA-Z0-9\\_]+::findFiltered\(\) should return array<T of object> but returns mixed.#'
+            path: src/Repository/AbstractJsonFilteredRepository.php

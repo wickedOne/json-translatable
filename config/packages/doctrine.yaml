@@ -1,0 +1,67 @@
+doctrine:
+    dbal:
+        connections:
+            db57:
+                url: '%env(resolve:DB57_URL)%'
+                profiling_collect_backtrace: '%kernel.debug%'
+                use_savepoints: true
+            db80:
+                url: '%env(resolve:DB80_URL)%'
+                profiling_collect_backtrace: '%kernel.debug%'
+                use_savepoints: true
+        default_connection: db57
+    orm:
+        default_entity_manager: db57
+        entity_managers:
+            db57:
+                connection: db57
+                mappings:
+                    Db57:
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/Db57'
+                        prefix: 'App\Entity\Db57'
+                        alias: Db57
+                dql:
+                    string_functions:
+                        JSON_FILTER: App\Doctrine\Extension\Query\Mysql\JsonFilter
+                hydrators:
+                    Translatable: App\Doctrine\Hydration\TranslatableHydrator
+            db80:
+                connection: db80
+                mappings:
+                    Db80:
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/Db80'
+                        prefix: 'App\Entity\Db80'
+                        alias: Db80
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+        controller_resolver:
+            auto_mapping: false
+
+when@test:
+    doctrine:
+        dbal:
+            # "TEST_TOKEN" is typically set by ParaTest
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            default_entity_manager: db57
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system
