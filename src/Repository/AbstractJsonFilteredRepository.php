@@ -54,7 +54,7 @@ abstract class AbstractJsonFilteredRepository extends ServiceEntityRepository
             ->addCriteria($criteria)
             ->getQuery()
             ->setResultSetMapping($rsm)
-            ->getResult('Translatable')
+            ->getResult()
         ;
     }
 }

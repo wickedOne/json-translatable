@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Db57\Translatable;
 use App\Entity\Db57\TranslatableJson;
 use App\Entity\Db57\TranslatableJsonFiltered;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +25,14 @@ class AppController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
     ) {
+    }
+
+    #[Route('/{_locale}/translatable')]
+    public function translatable(): Response
+    {
+        return $this->render('translatable.html.twig', [
+            'entities' => $this->entityManager->getRepository(Translatable::class)->findAll(),
+        ]);
     }
 
     #[Route('/{_locale}/translatable-json')]

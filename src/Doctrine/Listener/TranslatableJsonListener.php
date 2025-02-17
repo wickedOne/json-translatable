@@ -12,33 +12,34 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Listener;
 
-use App\Contract\TranslatableInterface;
-use App\Repository\TranslationsRepository;
+use App\Contract\RecordTranslationsInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Translation\LocaleSwitcher;
 
 #[AsEntityListener]
-class TranslatableListener
+class TranslatableJsonListener
 {
     private readonly string $locale;
 
     public function __construct(
-        private readonly TranslationsRepository $repository,
         private readonly PropertyAccessorInterface $propertyAccessor,
         LocaleSwitcher $switcher,
     ) {
         $this->locale = $switcher->getLocale();
     }
 
-    public function postLoad(TranslatableInterface $entity, PostLoadEventArgs $args): void
+    public function postLoad(RecordTranslationsInterface $entity, PostLoadEventArgs $args): void
     {
-        $result = $this->repository->findTranslations($entity);
-        $translations = $result[$this->locale] ?? [];
+        $translations = array_filter($entity->getTranslations(), fn (array $translation): bool => isset($translation['locale']) && $translation['locale'] === $this->locale);
+        $properties = array_merge(...array_map(static fn (array $translation): array => $translation['properties'], $translations));
 
-        foreach ($translations as $field => $value) {
-            $this->propertyAccessor->setValue($entity, $field, $value);
+        foreach ($properties as $property => $value) {
+            try {
+                $this->propertyAccessor->setValue($entity, $property, $value);
+            } catch (\Exception) {
+            }
         }
     }
 }

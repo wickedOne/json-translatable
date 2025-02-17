@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace App\Entity\Db57;
 
 use App\Contract\RecordTranslationsInterface;
-use App\Doctrine\Listener\TranslatableListener;
+use App\Doctrine\Listener\TranslatableJsonListener;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @phpstan-import-type TranslationsType from RecordTranslationsInterface
  */
 #[ORM\Entity]
-#[ORM\EntityListeners([TranslatableListener::class])]
+#[ORM\EntityListeners([TranslatableJsonListener::class])]
 class TranslatableJson implements RecordTranslationsInterface
 {
     #[ORM\Id]

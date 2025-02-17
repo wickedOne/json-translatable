@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Db57\Translatable;
 use App\Entity\Db57\TranslatableJson;
 use App\Entity\Db57\TranslatableJsonFiltered;
+use App\Entity\Db57\Translations;
 use Doctrine\ORM\EntityManagerInterface;
 use joshtronic\LoremIpsum;
 
@@ -41,6 +43,10 @@ class FixtureGenerator
         $truncateJsonFiltered = $connection->getDatabasePlatform()->getTruncateTableSQL($cmdJsonFiltered->getTableName());
         $connection->executeStatement($truncateJsonFiltered);
 
+        $cmd = $this->entityManager->getClassMetadata(Translatable::class);
+        $truncate = $connection->getDatabasePlatform()->getTruncateTableSQL($cmd->getTableName());
+        $connection->executeStatement($truncate);
+
         $values = [];
         $batchSize = 100;
 
@@ -56,6 +62,31 @@ class FixtureGenerator
 
         $connection->prepare(\sprintf('INSERT INTO TranslatableJson (title, name, description, translations) VALUES %s', implode(', ', $values)))->executeQuery();
         $connection->prepare(\sprintf('INSERT INTO TranslatableJsonFiltered (title, name, description, translations) VALUES %s', implode(', ', $values)))->executeQuery();
+
+        $this->classic();
+    }
+
+    private function classic(): void
+    {
+        $tableName = $this->entityManager->getClassMetadata(Translations::class)->getTableName();
+        $query = $this->entityManager->createQuery('SELECT t FROM App\Entity\Db57\TranslatableJson t');
+        $connection = $this->entityManager->getConnection();
+
+        foreach ($query->toIterable() as $row) {
+            \assert($row instanceof TranslatableJson);
+            $this->entityManager->remove($row);
+
+            $connection->prepare(\sprintf('INSERT INTO Translatable (id, title, name, description) VALUES (%d, \'%s\', \'%s\', \'%s\')', $row->getId(), $row->getTitle(), $row->getName(), $row->getDescription()))->executeQuery();
+            $values = [];
+
+            foreach ($row->getTranslations() as $translation) {
+                foreach ($translation['properties'] as $property => $value) {
+                    $values[] = '(\''.$tableName.'\','.$row->getId().', \''.$property.'\',\''.$value.'\',\''.$translation['locale'].'\')';
+                }
+            }
+
+            $connection->prepare(\sprintf('INSERT INTO Translations (tableName, recordId, field, value, locale) VALUES %s', implode(', ', $values)))->executeQuery();
+        }
     }
 
     private function translations(): array
