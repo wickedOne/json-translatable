@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "75ff2e8f97f3c4c0a3f2aa7b743353d6",
+    "content-hash": "80507ef69677f0c156ec11ba47d3192a",
     "packages": [
         {
             "name": "composer/semver",
@@ -5634,6 +5634,57 @@
             "time": "2025-01-30T17:00:50+00:00"
         },
         {
+            "name": "joshtronic/php-loremipsum",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joshtronic/php-loremipsum.git",
+                "reference": "6d7f8cff6a092a53d66b5237edbe97d398b14f88"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joshtronic/php-loremipsum/zipball/6d7f8cff6a092a53d66b5237edbe97d398b14f88",
+                "reference": "6d7f8cff6a092a53d66b5237edbe97d398b14f88",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.36 || ^9.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "joshtronic\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Sherman",
+                    "email": "hello@joshtronic.com",
+                    "homepage": "https://joshtronic.com"
+                }
+            ],
+            "description": "Lorem ipsum generator in PHP without dependencies",
+            "homepage": "https://github.com/joshtronic/php-loremipsum",
+            "keywords": [
+                "generator",
+                "ipsum",
+                "lorem"
+            ],
+            "support": {
+                "issues": "https://github.com/joshtronic/php-loremipsum/issues",
+                "source": "https://github.com/joshtronic/php-loremipsum/tree/2.1.0"
+            },
+            "time": "2022-01-23T23:27:44+00:00"
+        },
+        {
             "name": "phpstan/phpstan",
             "version": "2.1.5",
             "source": {
@@ -7689,6 +7740,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "joshtronic/php-loremipsum": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

@@ -32,7 +32,7 @@ class TranslatableListener
 
     public function postLoad(RecordTranslationsInterface $entity, PostLoadEventArgs $args): void
     {
-        $translations = array_filter($entity->getTranslations(), fn (array $translation): bool => $translation['locale'] === $this->locale);
+        $translations = array_filter($entity->getTranslations(), fn (array $translation): bool => isset($translation['locale']) && $translation['locale'] === $this->locale);
         $properties = array_merge(...array_map(static fn (array $translation): array => $translation['properties'], $translations));
 
         foreach ($properties as $property => $value) {

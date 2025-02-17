@@ -25,5 +25,5 @@ interface RecordTranslationsInterface
     /**
      * @param array<array-key, TranslationsType> $translations
      */
-    public function setTranslations(array $translations): RecordTranslationsInterface;
+    public function setTranslations(array $translations): self;
 }

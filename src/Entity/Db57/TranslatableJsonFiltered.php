@@ -17,8 +17,6 @@ use App\Doctrine\Listener\TranslatableListener;
 use App\Repository\TranslatableJsonFilteredRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * @phpstan-import-type TranslationsType from RecordTranslationsInterface
@@ -38,7 +36,7 @@ class TranslatableJsonFiltered implements RecordTranslationsInterface
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 2000, nullable: true)]
     private ?string $description = null;
 
     /**

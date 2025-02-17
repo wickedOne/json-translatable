@@ -12,11 +12,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Db57\TranslatableJson;
-use App\Entity\Db57\TranslatableJsonFiltered;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\FixtureGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -24,50 +23,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateFixtureCommand extends Command
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private readonly FixtureGenerator $generator,
     ) {
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this
+            ->setDescription('generate translatable json fixtures')
+            ->addArgument('amount', InputArgument::OPTIONAL, 'the number of fixtures to create', 10);
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $translations = [
-            [
-                'locale' => 'nl_NL',
-                'properties' => [
-                    'title' => 'dutch title',
-                    'name' => 'dutch name',
-                    'description' => 'dutch description',
-                ],
-            ],
-            [
-                'locale' => 'de_DE',
-                'properties' => [
-                    'title' => 'german title',
-                    'description' => 'german description',
-                ],
-            ],
-        ];
+        $amount = $input->getArgument('amount');
 
-        $entity = (new TranslatableJson())
-            ->setName('name')
-            ->setTitle('title')
-            ->setDescription('description')
-            ->setTranslations($translations)
-        ;
+        \assert(is_numeric($amount));
 
-        $this->entityManager->persist($entity);
-
-        $entity = (new TranslatableJsonFiltered())
-            ->setName('name')
-            ->setTitle('title')
-            ->setDescription('description')
-            ->setTranslations($translations)
-        ;
-
-        $this->entityManager->persist($entity);
-
-        $this->entityManager->flush();
+        $this->generator->generate((int) $amount);
 
         return Command::SUCCESS;
     }

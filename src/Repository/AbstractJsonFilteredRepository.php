@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Doctrine\Extension\Query\Criteria\JsonFilterCriteria;
-use App\Entity\Db57\TranslatableJsonFiltered;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
@@ -34,15 +33,16 @@ abstract class AbstractJsonFilteredRepository extends ServiceEntityRepository
     {
         $columns = [];
         $fields = [];
+        $key = 0;
 
         foreach (array_diff($this->getClassMetadata()->getFieldNames(), array_keys($filtered)) as $key => $field) {
-            $fields[] = $alias . '.' . $field;
-            $columns[$field] = $field . '_' . $key;
+            $fields[] = $alias.'.'.$field;
+            $columns[$field] = $field.'_'.$key;
         }
 
         foreach ($filtered as $filterCriteria) {
             $fields[] = $filterCriteria->expression($alias);
-            $columns[$filterCriteria->field] = 'sclr_' . ++$key;
+            $columns[$filterCriteria->field] = 'sclr_'.++$key;
         }
 
         $rsm = new ResultSetMappingBuilder($this->getEntityManager(), ResultSetMappingBuilder::COLUMN_RENAMING_INCREMENT);

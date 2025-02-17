@@ -35,7 +35,7 @@ class TranslatableJson implements RecordTranslationsInterface
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 2000, nullable: true)]
     private ?string $description = null;
 
     /**

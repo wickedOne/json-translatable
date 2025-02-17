@@ -65,10 +65,10 @@ class JsonFilter extends FunctionNode
         $needle = $sqlWalker->walkStringPrimary($this->needle);
         $path = $sqlWalker->walkStringPrimary($this->path);
         $amount = $sqlWalker->walkStringPrimary($this->amount);
-        $offset = $sqlWalker->walkStringPrimary(substr($path, strpos($path, '.') ?: strlen($path), -1));
+        $offset = $sqlWalker->walkStringPrimary(substr($path, strpos($path, '.') ?: \strlen($path), -1));
 
         return \sprintf(
-            'JSON_ARRAY(JSON_EXTRACT(%1$s, JSON_UNQUOTE(REPLACE(JSON_SEARCH(%1$s, %5$s, %2$s, NULL, %3$s), %4$s, \'\'))))',
+            'JSON_ARRAY(IFNULL(JSON_EXTRACT(%1$s, JSON_UNQUOTE(REPLACE(JSON_SEARCH(%1$s, %5$s, %2$s, NULL, %3$s), %4$s, \'\'))), JSON_ARRAY()))',
             $target, $needle, $path, $offset, $amount
         );
     }
