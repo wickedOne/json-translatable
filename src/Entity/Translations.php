@@ -10,7 +10,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace App\Entity\Db57;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

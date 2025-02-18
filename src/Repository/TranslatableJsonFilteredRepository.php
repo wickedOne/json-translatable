@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Doctrine\Extension\Query\Criteria\JsonFilterCriteria;
-use App\Entity\Db57\TranslatableJsonFiltered;
+use App\Entity\TranslatableJsonFiltered;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Translation\LocaleSwitcher;

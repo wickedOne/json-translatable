@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Db57\Translatable;
-use App\Entity\Db57\TranslatableJson;
-use App\Entity\Db57\TranslatableJsonFiltered;
+use App\Entity\Translatable;
+use App\Entity\TranslatableJson;
+use App\Entity\TranslatableJsonFiltered;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +22,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class AppController extends AbstractController
 {
+    private readonly EntityManagerInterface $em;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
     ) {
@@ -46,10 +48,8 @@ class AppController extends AbstractController
     #[Route('/{_locale}/translatable-filtered-json')]
     public function translatableFilteredJson(): Response
     {
-        $entities = $this->entityManager->getRepository(TranslatableJsonFiltered::class)->findAllFiltered();
-
         return $this->render('translatable.html.twig', [
-            'entities' => $entities,
+            'entities' => $this->entityManager->getRepository(TranslatableJsonFiltered::class)->findAllFiltered(),
         ]);
     }
 }

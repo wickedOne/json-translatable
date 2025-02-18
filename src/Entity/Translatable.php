@@ -10,20 +10,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace App\Entity\Db57;
+namespace App\Entity;
 
-use App\Contract\RecordTranslationsInterface;
-use App\Doctrine\Listener\TranslatableJsonListener;
-use App\Repository\TranslatableJsonFilteredRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Contract\TranslatableInterface;
+use App\Doctrine\Listener\TranslatableListener;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @phpstan-import-type TranslationsType from RecordTranslationsInterface
- */
-#[ORM\Entity(repositoryClass: TranslatableJsonFilteredRepository::class)]
-#[ORM\EntityListeners([TranslatableJsonListener::class])]
-class TranslatableJsonFiltered implements RecordTranslationsInterface
+#[ORM\Entity]
+#[ORM\EntityListeners([TranslatableListener::class])]
+class Translatable implements TranslatableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,12 +33,6 @@ class TranslatableJsonFiltered implements RecordTranslationsInterface
 
     #[ORM\Column(length: 2000, nullable: true)]
     private ?string $description = null;
-
-    /**
-     * @var array<array-key, TranslationsType>
-     */
-    #[ORM\Column(type: Types::JSON)]
-    private array $translations;
 
     public function getId(): int
     {
@@ -82,18 +71,6 @@ class TranslatableJsonFiltered implements RecordTranslationsInterface
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function setTranslations(array $translations): self
-    {
-        $this->translations = $translations;
 
         return $this;
     }

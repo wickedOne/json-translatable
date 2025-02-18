@@ -11,29 +11,19 @@ doctrine:
                 use_savepoints: true
         default_connection: db57
     orm:
-        default_entity_manager: db57
-        entity_managers:
-            db57:
-                connection: db57
-                mappings:
-                    Db57:
-                        is_bundle: false
-                        dir: '%kernel.project_dir%/src/Entity/Db57'
-                        prefix: 'App\Entity\Db57'
-                        alias: Db57
-                dql:
-                    string_functions:
-                        JSON_FILTER: App\Doctrine\Extension\Query\Mysql\JsonFilter
-                hydrators:
-                    Translatable: App\Doctrine\Hydration\TranslatableHydrator
-            db80:
-                connection: db80
-                mappings:
-                    Db80:
-                        is_bundle: false
-                        dir: '%kernel.project_dir%/src/Entity/Db80'
-                        prefix: 'App\Entity\Db80'
-                        alias: Db80
+        auto_mapping: true
+        mappings:
+            App:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+        dql:
+            string_functions:
+                JSON_FILTER: App\Doctrine\Extension\Query\Mysql\JsonFilter
+        hydrators:
+            Translatable: App\Doctrine\Hydration\TranslatableHydrator
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
         controller_resolver:
@@ -48,7 +38,6 @@ when@test:
 when@prod:
     doctrine:
         orm:
-            default_entity_manager: db57
             auto_generate_proxy_classes: false
             proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
             query_cache_driver:

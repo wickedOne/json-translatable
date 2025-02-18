@@ -17,6 +17,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand('fixtures:generate')]
@@ -32,16 +33,19 @@ class GenerateFixtureCommand extends Command
     {
         $this
             ->setDescription('generate translatable json fixtures')
-            ->addArgument('amount', InputArgument::OPTIONAL, 'the number of fixtures to create', 10);
+            ->addArgument('amount', InputArgument::OPTIONAL, 'the number of fixtures to create', 10)
+            ->addOption('conn', null, InputOption::VALUE_OPTIONAL, 'connection to use', 'db57')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $amount = $input->getArgument('amount');
+        $connection = $input->getOption('conn');
 
         \assert(is_numeric($amount));
 
-        $this->generator->generate((int) $amount);
+        $this->generator->generate((int) $amount, $connection);
 
         return Command::SUCCESS;
     }

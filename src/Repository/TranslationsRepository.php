@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Contract\TranslatableInterface;
-use App\Entity\Db57\Translations;
+use App\Entity\Translations;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TranslationsRepository

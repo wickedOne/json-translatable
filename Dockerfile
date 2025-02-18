@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1
 
 # Versions
-FROM dunglas/frankenphp:1-php8.3 AS frankenphp_upstream
+FROM dunglas/frankenphp:1.4.2-php8.3 AS frankenphp_upstream
 
 # The different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
@@ -22,6 +22,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	file \
 	gettext \
 	git \
+    default-mysql-client \
+    mariadb-client \
+    libmariadb3 libmariadb-dev \
+    wget \
+    systemctl \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \

@@ -12,10 +12,11 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Db57\Translatable;
-use App\Entity\Db57\TranslatableJson;
-use App\Entity\Db57\TranslatableJsonFiltered;
-use App\Entity\Db57\Translations;
+use App\Entity\Translatable;
+use App\Entity\TranslatableJson;
+use App\Entity\TranslatableJsonFiltered;
+use App\Entity\Translations;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use joshtronic\LoremIpsum;
 
@@ -27,13 +28,15 @@ class FixtureGenerator
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly Connection $db57Connection,
+        private readonly Connection $db80Connection,
     ) {
         $this->ipsum = new LoremIpsum();
     }
 
-    public function generate(int $size): void
+    public function generate(int $size, string $connectionName): void
     {
-        $connection = $this->entityManager->getConnection();
+        $connection = 'db57' === $connectionName ? $this->db57Connection : $this->db80Connection;
 
         $cmdJson = $this->entityManager->getClassMetadata(TranslatableJson::class);
         $truncateJson = $connection->getDatabasePlatform()->getTruncateTableSQL($cmdJson->getTableName());
@@ -43,7 +46,11 @@ class FixtureGenerator
         $truncateJsonFiltered = $connection->getDatabasePlatform()->getTruncateTableSQL($cmdJsonFiltered->getTableName());
         $connection->executeStatement($truncateJsonFiltered);
 
-        $cmd = $this->entityManager->getClassMetadata(Translatable::class);
+        $cmdTranslatable = $this->entityManager->getClassMetadata(Translatable::class);
+        $truncateTranslatable = $connection->getDatabasePlatform()->getTruncateTableSQL($cmdTranslatable->getTableName());
+        $connection->executeStatement($truncateTranslatable);
+
+        $cmd = $this->entityManager->getClassMetadata(Translations::class);
         $truncate = $connection->getDatabasePlatform()->getTruncateTableSQL($cmd->getTableName());
         $connection->executeStatement($truncate);
 
@@ -63,14 +70,13 @@ class FixtureGenerator
         $connection->prepare(\sprintf('INSERT INTO TranslatableJson (title, name, description, translations) VALUES %s', implode(', ', $values)))->executeQuery();
         $connection->prepare(\sprintf('INSERT INTO TranslatableJsonFiltered (title, name, description, translations) VALUES %s', implode(', ', $values)))->executeQuery();
 
-        $this->classic();
+        $this->classic($connection);
     }
 
-    private function classic(): void
+    private function classic(Connection $connection): void
     {
         $tableName = $this->entityManager->getClassMetadata(Translations::class)->getTableName();
-        $query = $this->entityManager->createQuery('SELECT t FROM App\Entity\Db57\TranslatableJson t');
-        $connection = $this->entityManager->getConnection();
+        $query = $this->entityManager->createQuery('SELECT t FROM App\Entity\TranslatableJson t');
 
         foreach ($query->toIterable() as $row) {
             \assert($row instanceof TranslatableJson);

@@ -1,5 +1,6 @@
 doctrine_migrations:
-    em: db57
+    connection: db57
+#    em: default <= disable connection and activate em when you want to do a doctrine:migrations:diff
     migrations_paths:
         # namespace is arbitrary but should be different from App\Migrations
         # as migrations classes should NOT be autoloaded
